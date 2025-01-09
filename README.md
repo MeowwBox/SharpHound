@@ -1,14 +1,12 @@
----
-SharpHound Open Source Client version: 2.0.0
----
-
 # SharpHound
 
 ![GitHub all releases](https://img.shields.io/github/downloads/BloodHoundAD/SharpHound/total)
 
 ## Get SharpHound
 
-The latest build of SharpHound will always be in the BloodHound repository [here](https://github.com/BloodHoundAD/BloodHound/tree/master/Collectors)
+The latest build of SharpHound will always be found [here](https://github.com/BloodHoundAD/SharpHound/releases).
+
+To determine the SharpHound version compatible with a deployed BloodHound CE instance, login to BloodHound CE's web UI and click on ⚙️ (Settings) → Download Collectors. Then, click either the "Download SharpHound" button in the user interface or use the displayed SharpHound version to download the appropriate [release binary](https://github.com/BloodHoundAD/SharpHound/releases). Alternatively, compile a SharpHound binary from the corresponding release commit.
 
 ## Compile Instructions
 
@@ -23,7 +21,6 @@ dotnet build
 
 SharpHound is designed targeting .Net 4.6.2. SharpHound must be run from the context of a domain user, either directly through a logon or through another method such as RUNAS.
 
-
 # SharpHound
 
 ```csharp
@@ -31,10 +28,11 @@ dotnet restore .
 dotnet build
 ```
 
-# CLI
+# CLI Arguments
+The listing below details the CLI arguments SharpHound supports. Additional details about these options can be found in the [BloodHound CE Collection documentation](https://support.bloodhoundenterprise.io/hc/en-us/articles/17481375424795-All-SharpHound-Community-Edition-Flags-Explained).
 ```
   -c, --collectionmethods    (Default: Default) Collection Methods: Container, Group, LocalGroup, GPOLocalGroup,
-                             Session, LoggedOn, ObjectProps, ACL, ComputerOnly, Trusts, Default, RDP, DCOM, DCOnly
+                             Session, LoggedOn, ObjectProps, ACL, ComputerOnly, Trusts, Default, RDP, DCOM, DCOnly, UserRights, CARegistry, DCRegistry, CertServices
 
   -d, --domain               Specify domain to enumerate
 
@@ -79,7 +77,7 @@ dotnet build
   --ldapport                 (Default: 0) Override port for LDAP
 
   --secureldap               (Default: false) Connect to LDAP SSL instead of regular LDAP
-  
+
   --disablecertverification  (Default: false) Disable certificate verification for secure LDAP
 
   --disablesigning           (Default: false) Disables Kerberos Signing/Sealing
@@ -87,7 +85,7 @@ dotnet build
   --skipportcheck            (Default: false) Skip checking if 445 is open
 
   --portchecktimeout         (Default: 500) Timeout for port checks in milliseconds
-  
+
   --skippasswordcheck        (Default: false) Skip PwdLastSet age check when checking computers
 
   --excludedcs               (Default: false) Exclude domain controllers from session/localgroup enumeration (mostly for
@@ -114,6 +112,12 @@ dotnet build
   --loopinterval             Add delay between loops (hh:mm:ss - 00:03:00 is 3 minute)
 
   --statusinterval           (Default: 30000) Interval in which to display status in milliseconds
+
+  --localadminsessionenum    Specify if you want to use a dedicated LOCAL user for session enumeration
+
+  --localadminusername       Specify the username of the localadmin for session enumeration
+
+  --localadminpassword       Specify the password of the localadmin for session enumeration
 
   -v                         (Default: 2) Enable verbose output. Lower is more verbose
 

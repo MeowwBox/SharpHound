@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -22,7 +23,7 @@ namespace Sharphound.Writers
         private string _fileName;
         private JsonSerializerSettings _serializerSettings;
 
-        private const int DataVersion = 5;
+        private const int DataVersion = 6;
 
         /// <summary>
         ///     Creates a new instance of a JSONWriter using the specified datatype and program context
@@ -59,7 +60,7 @@ namespace Sharphound.Writers
 
             _fileName = filename;
 
-            _jsonWriter = new JsonTextWriter(new StreamWriter(filename, false, Encoding.UTF8));
+            _jsonWriter = new JsonTextWriter(new StreamWriter(filename, false, new UTF8Encoding(false)));
             _jsonWriter.Formatting = PrettyPrint;
             _jsonWriter.WriteStartObject();
             _jsonWriter.WritePropertyName("data");
@@ -95,7 +96,8 @@ namespace Sharphound.Writers
                 Count = Count,
                 CollectionMethods = (long)_context.ResolvedCollectionMethods,
                 DataType = DataType,
-                Version = DataVersion
+                Version = DataVersion,
+                CollectorVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString()
             };
             
             await _jsonWriter.FlushAsync();
