@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,18 +22,18 @@ namespace Sharphound
 
         private bool disposedValue;
 
-        public BaseContext(ILogger logger, LDAPConfig ldapConfig, Flags flags)
+        public BaseContext(ILogger logger, LdapConfig ldapConfig, Flags flags)
         {
             Logger = logger;
             Flags = flags;
-            LDAPUtils = new LDAPUtils();
-            LDAPUtils.SetLDAPConfig(ldapConfig);
+            LDAPUtils = new LdapUtils();
+            LDAPUtils.SetLdapConfig(ldapConfig);
             CancellationTokenSource = new CancellationTokenSource();
         }
 
         public bool IsFaulted { get; set; }
 
-        public ResolvedCollectionMethod ResolvedCollectionMethods { get; set; }
+        public CollectionMethod ResolvedCollectionMethods { get; set; }
         public string LdapFilter { get; set; }
         public string SearchBase { get; set; }
         public string DomainName { get; set; }
@@ -55,7 +56,7 @@ namespace Sharphound
         public int Jitter { get; set; }
         public int PortScanTimeout { get; set; } = 500;
         public CancellationTokenSource CancellationTokenSource { get; set; }
-        public ILDAPUtils LDAPUtils { get; set; }
+        public ILdapUtils LDAPUtils { get; set; }
         public Task CollectionTask { get; set; }
         public Flags Flags { get; set; }
 
@@ -63,6 +64,8 @@ namespace Sharphound
         {
             CurrentLoopTime = $"{DateTime.Now:yyyyMMddHHmmss}";
         }
+
+        public HashSet<string> CollectedDomainSids { get; } = new();
 
         public async Task DoDelay()
         {
@@ -87,12 +90,12 @@ namespace Sharphound
             return path;
         }
 
-        public ResolvedCollectionMethod SetupMethodsForLoop()
+        public CollectionMethod SetupMethodsForLoop()
         {
             var original = ResolvedCollectionMethods;
-            const ResolvedCollectionMethod computerCollectionMethods =
-                ResolvedCollectionMethod.LocalGroups | ResolvedCollectionMethod.LoggedOn |
-                ResolvedCollectionMethod.Session;
+            const CollectionMethod computerCollectionMethods =
+                CollectionMethod.LocalGroups | CollectionMethod.LoggedOn |
+                CollectionMethod.Session;
             return original & computerCollectionMethods;
         }
 
@@ -115,6 +118,9 @@ namespace Sharphound
         }
 
         public EnumerationDomain[] Domains { get; set; }
+        public string LocalAdminUsername { get; set; }
+        public string LocalAdminPassword { get; set; }
+        public bool LocalAdminSessionEnum { get; set; }
 
         // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
         // ~Context()
